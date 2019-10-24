@@ -7,7 +7,7 @@ This repo contains the accompagnying code for the paper https://arxiv.org/abs/19
 
 Deep learning code is written in **TensorFlow 2.0**.
 
-#### Requirements
+### Requirements
 - Python 3.6.4
 - TensorFlow 2.0.0
 - TensorFlow-Addons 0.6.0
