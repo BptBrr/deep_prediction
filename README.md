@@ -8,8 +8,8 @@ This repo contains the accompagnying code for the paper https://arxiv.org/abs/19
 Deep learning code is written in **TensorFlow 2.0**.
 
 ### Requirements
-- Python 3.6.4
-- TensorFlow 2.0.0
-- TensorFlow-Addons 0.6.0
-- Numpy 1.17.2
-- LightGBM 2.1.2
+- python==3.6.4
+- tensorflow==2.0.0
+- tensorflow_addons==0.6.0
+- numpy==1.17.2
+- lightgbm==2.1.2
