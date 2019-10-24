@@ -41,7 +41,7 @@ full_data = (data[features].values.astype(np.float32),
 exnet_model = ExNet(n_feats=63, output_dim=2, n_investors=len(np.unique(train_data_[1])), name=f'ExNet_{asset}',
                     **build_params)
 exnet_model.fake_call()
-exnet_model.load_weights(f'models/ExNet_{asset}.h5')
+exnet_model.load_weights(f'ExNet_{asset}.h5')
 
 probas, _ = exnet_model.get_experts_repartition(print_stats=True)
 _, exp, _ = exnet_model(*full_data[0:2])
