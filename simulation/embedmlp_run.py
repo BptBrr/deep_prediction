@@ -1,4 +1,4 @@
-from Research.Models.embed_mlp import *
+from embedmlp import *
 import pandas as pd
 import numpy as np
 import pickle
