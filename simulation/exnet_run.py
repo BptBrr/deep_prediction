@@ -11,6 +11,7 @@ from sklearn.metrics import roc_auc_score, accuracy_score
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
+path_to_repo = '/home/baptiste/Projects/deep_prediction'
 seed = 0
 np.random.seed(seed)
 
@@ -32,8 +33,8 @@ learning_rate = 1e-3
 optimizer = 'nadam'
 lookahead = True
 
-data = pd.read_csv('/home/baptiste/Projects/Research/simulation/data/sampled_data.csv')
-with open('/home/baptiste/Projects/Research/simulation/data/sampled_data_specs.pkl', 'rb') as f:
+data = pd.read_csv(f'{path_to_repo}/simulation/data/sampled_data.csv')
+with open(f'{path_to_repo}/simulation/data/sampled_data_specs.pkl', 'rb') as f:
     data_specs = pickle.load(f)
 
 features = [feature for feature in data.columns if 'X' in feature]
@@ -61,10 +62,10 @@ print(f'Training on {train_data_[0].shape[0]} samples, validating on {val_data_[
 exnet_model = ExNet(n_feats=5, output_dim=2, n_experts=n_experts, expert_architecture=expert_architecture,
                     n_investors=len(clients), embedding_size=embedding_size, dropout_rates=dropout_rates,
                     weight_decay=weight_decay,  spec_weight=spec_weight, entropy_weight=entropy_weight, gamma=gamma,
-                    name='ExNet_simul')
+                    name=f'ExNet_{n_experts}_s{spec_weight}_e{entropy_weight}')
 exnet_model.fit(train_data=train_data_, val_data=val_data_, n_epochs=n_epochs, batch_size=batch_size,
                 optimizer=optimizer, learning_rate=learning_rate, patience=patience, lookahead=lookahead,
-                save_path='/home/baptiste/Projects/Research/simulation/models/', seed=seed)
+                save_path=f'{path_to_repo}/simulation/models/', seed=seed)
 
 train_pred = exnet_model.predict(train_data_[0:2])
 val_pred   = exnet_model.predict(val_data_[0:2])
