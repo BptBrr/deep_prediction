@@ -1,5 +1,5 @@
-from exnet_v3 import *
-from simulation.utils import *
+from deep_prediction.exnet_v3 import *
+from deep_prediction.simulation.utils import *
 import pandas as pd
 import numpy as np
 import pickle
@@ -32,8 +32,8 @@ learning_rate = 1e-3
 optimizer = 'nadam'
 lookahead = True
 
-data = pd.read_csv('/home/baptiste/Projects/Research/DeepPrediction/data/sampled_data.csv')
-with open('/home/baptiste/Projects/Research/DeepPrediction/data/sampled_data_specs.pkl', 'rb') as f:
+data = pd.read_csv('/home/baptiste/Projects/Research/simulation/data/sampled_data.csv')
+with open('/home/baptiste/Projects/Research/simulation/data/sampled_data_specs.pkl', 'rb') as f:
     data_specs = pickle.load(f)
 
 features = [feature for feature in data.columns if 'X' in feature]
@@ -64,7 +64,7 @@ exnet_model = ExNet(n_feats=5, output_dim=2, n_experts=n_experts, expert_archite
                     name='ExNet_simul')
 exnet_model.fit(train_data=train_data_, val_data=val_data_, n_epochs=n_epochs, batch_size=batch_size,
                 optimizer=optimizer, learning_rate=learning_rate, patience=patience, lookahead=lookahead,
-                save_path='/home/baptiste/Projects/Research/DeepPrediction/models/', seed=seed)
+                save_path='/home/baptiste/Projects/Research/simulation/models/', seed=seed)
 
 train_pred = exnet_model.predict(train_data_[0:2])
 val_pred   = exnet_model.predict(val_data_[0:2])

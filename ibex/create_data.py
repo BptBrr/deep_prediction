@@ -3,9 +3,10 @@ import numpy as np
 from ta import *
 
 asset = 'TEF'
+path_to_repo = '/home/baptiste/Projects/deep_prediction'
 
-investors = pd.read_csv(f'/home/baptiste/Projects/Research/IBEX/{asset}_Investors.csv')
-prices = pd.read_csv(f'/home/baptiste/Projects/Research/IBEX/{asset}_Prices.csv')
+investors = pd.read_csv(f'{path_to_repo}/ibex/data/{asset}_Investors.csv')
+prices = pd.read_csv(f'{path_to_repo}/ibex/data/{asset}_Prices.csv')
 
 # Use all TA features from 'ta' library.
 ta_features_to_use = ['volume_adi', 'volume_obv', 'volume_cmf', 'volume_fi', 'volume_em', 'volume_vpt',
@@ -37,8 +38,9 @@ investors['buyer'] = 1 * (investors.move > 0.)
 # As we use position in our model features, we need to shift it as well.
 investors['position'] = investors['previous_position']
 
-# We re-use the active definition introduced in the original paper, but on the Buy side only.
-investors_activity = investors.groupby('investor_id')['buyer'].sum()
+# We re-use the active definition introduced in the original paper, but on the Buy side only. We apply this threshold
+# on the training set, as we need to see a client being active to be able to predict its activity.
+investors_activity = investors[investors.date < '2006-01-01'].groupby('investor_id')['buyer'].sum()
 active_investors = investors_activity[investors_activity > 20].index
 print(f'Active investors: {len(active_investors)}')
 
@@ -79,4 +81,4 @@ data = data[['date', 'investor_encoding', 'buyer'] + features_to_use]
 data['train_idx'] = train_idx
 data['val_idx'] = val_idx
 data['test_idx'] = test_idx
-data.to_csv(f'IBEX_{asset}_dataset.csv', index=False)
+data.to_csv(f'{path_to_repo}/ibex/data/IBEX_{asset}_dataset.csv', index=False)

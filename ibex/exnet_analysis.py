@@ -1,7 +1,8 @@
-from ExNets.exnet_v3 import *
+from deep_prediction.exnet_v3 import *
 from sklearn.metrics import roc_auc_score, average_precision_score
 
 asset = 'TEF'
+path_to_repo = '/home/baptiste/Projects/deep_prediction'
 build_params = {'n_experts': 4,
                 'spec_weight': 7.7e-4,
                 'entropy_weight': 4.2e-2,
@@ -11,7 +12,7 @@ build_params = {'n_experts': 4,
                 'weight_decay': {'l1': 0., 'l2': 0.},
                 'gamma': 2.5}
 
-data = pd.read_csv('data/IBEX_TEF_dataset.csv')
+data = pd.read_csv(f'{path_to_repo}/ibex/data/IBEX_TEF_dataset.csv')
 features = list(data.columns[3:-3])  # Removing irrelevant columns - date, encoding, target & splits.
 
 train_idx = (data.date < 20060101.)

@@ -137,8 +137,12 @@ class ExNet(tf.keras.Model):
         with tf.GradientTape() as tape:
             y_pred, exp_out, gat_out = self(expert_input, gating_input)
             output_loss = self.focal_loss(y_true, y_pred)
-            spec_loss = self.specialization_loss(exp_out)
-            entropy_loss = self.entropy_loss(gat_out)
+            if self.n_experts > 1:
+                spec_loss = self.specialization_loss(exp_out)
+                entropy_loss = self.entropy_loss(gat_out)
+            else:
+                spec_loss = tf.constant(0., dtype=tf.float32)
+                entropy_loss = tf.constant(0., dtype=tf.float32)
             regularization = sum(self.losses)
             loss = output_loss + self.spec_weight * spec_loss + self.entropy_weight * entropy_loss + regularization
 
@@ -151,8 +155,12 @@ class ExNet(tf.keras.Model):
 
         y_pred, exp_out, gat_out = self(expert_input, gating_input)
         output_loss = self.focal_loss(y_true, y_pred)
-        spec_loss = self.specialization_loss(exp_out)
-        entropy_loss = self.entropy_loss(gat_out)
+        if self.n_experts > 1:
+            spec_loss = self.specialization_loss(exp_out)
+            entropy_loss = self.entropy_loss(gat_out)
+        else:
+            spec_loss = tf.constant(0., dtype=tf.float32)
+            entropy_loss = tf.constant(0., dtype=tf.float32)
         regularization = sum(self.losses)
         loss = output_loss + self.spec_weight * spec_loss + self.entropy_weight * entropy_loss + regularization
         return float(loss), float(output_loss), float(spec_loss), float(entropy_loss)
@@ -377,7 +385,7 @@ class ExNet(tf.keras.Model):
 
         reorder_probas = pd.DataFrame(reorder_dict)
         reorder_probas = reorder_probas.sort_values(by=[f'proba{i}' for i in range(self.n_experts)], ascending=False)
-        probas = reorder_probas[[f'proba{i}' for i in range(self.n_experts)]].values
+        probas = probas[reorder_probas.investor_idx.values, :]
 
         cmap = plt.get_cmap('jet')
         idx = np.linspace(0, 1, self.n_experts)
