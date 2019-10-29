@@ -22,3 +22,4 @@ Run *create_data.py* to create the dataset described in the article. Run *exnet_
 - numpy==1.17.2
 - lightgbm==2.1.2
 - ta (https://github.com/bukosabino/ta)
+- umap-learn==0.3.10
