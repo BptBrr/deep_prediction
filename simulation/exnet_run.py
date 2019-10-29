@@ -1,5 +1,5 @@
-from deep_prediction.exnet_v3 import *
-from deep_prediction.simulation.utils import *
+from exnet_v3 import *
+from simulation.utils import *
 import pandas as pd
 import numpy as np
 import pickle
@@ -8,33 +8,33 @@ import os
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score, accuracy_score
 
+# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
-path_to_repo = '/home/baptiste/Projects/deep_prediction'
 seed = 0
 np.random.seed(seed)
 
 # Build params
-n_experts = 100
+n_experts = 10
 expert_architecture = []
 embedding_size = 32
 dropout_rates = {'input': 0., 'hidden': 0.}
 weight_decay = {'l1': 0., 'l2': 0.}
-spec_weight = 0.05
+spec_weight = 0.01
 entropy_weight = 1.
 gamma = 0.
 
 # Fit params
-n_epochs = 100
+n_epochs = 200
 patience = 10
-batch_size = 1024
+batch_size = 128
 learning_rate = 1e-3
 optimizer = 'nadam'
 lookahead = True
 
-data = pd.read_csv(f'{path_to_repo}/simulation/data/sampled_data.csv')
-with open(f'{path_to_repo}/simulation/data/sampled_data_specs.pkl', 'rb') as f:
+data = pd.read_csv('data/sampled_data.csv')
+with open('data/sampled_data_specs.pkl', 'rb') as f:
     data_specs = pickle.load(f)
 
 features = [feature for feature in data.columns if 'X' in feature]
@@ -65,7 +65,7 @@ exnet_model = ExNet(n_feats=5, output_dim=2, n_experts=n_experts, expert_archite
                     name=f'ExNet_{n_experts}_s{spec_weight}_e{entropy_weight}')
 exnet_model.fit(train_data=train_data_, val_data=val_data_, n_epochs=n_epochs, batch_size=batch_size,
                 optimizer=optimizer, learning_rate=learning_rate, patience=patience, lookahead=lookahead,
-                save_path=f'{path_to_repo}/simulation/models/', seed=seed)
+                save_path='models/', seed=seed)
 
 train_pred = exnet_model.predict(train_data_[0:2])
 val_pred   = exnet_model.predict(val_data_[0:2])

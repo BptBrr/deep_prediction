@@ -5,7 +5,6 @@ from sklearn.metrics import average_precision_score
 
 seed = 0
 asset = 'TEF'
-path_to_repo = '/home/baptiste/Projects/deep_prediction'
 
 # LGBM params
 num_leaves = 16
@@ -18,7 +17,7 @@ subsample_freq = 5
 colsample_bytree = 0.85
 
 # ===== Preparing data =====
-data = pd.read_csv(f'{path_to_repo}/ibex/data/IBEX_{asset}_dataset.csv')
+data = pd.read_csv(f'data/IBEX_{asset}_dataset.csv')
 n_investors = np.unique(data.investor_encoding.values).shape[0]
 
 train_idx = data['train_idx'].values

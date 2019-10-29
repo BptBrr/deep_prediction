@@ -1,4 +1,4 @@
-from deep_prediction.embedmlp import *
+from embedmlp import *
 import pandas as pd
 import numpy as np
 import pickle
@@ -9,7 +9,6 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 # physical_devices = tf.config.experimental.list_physical_devices('GPU')
 # tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
-path_to_repo = '/home/baptiste/Projects/deep_prediction'
 seed = 0
 np.random.seed(seed)
 
@@ -28,8 +27,8 @@ learning_rate = 1e-3
 optimizer = 'nadam'
 lookahead = True
 
-data = pd.read_csv(f'{path_to_repo}/simulation/data/sampled_data.csv')
-with open(f'{path_to_repo}/simulation/data/sampled_data_specs.pkl', 'rb') as f:
+data = pd.read_csv('data/sampled_data.csv')
+with open('data/sampled_data_specs.pkl', 'rb') as f:
     data_specs = pickle.load(f)
 
 features = [feature for feature in data.columns if 'X' in feature]
@@ -59,7 +58,7 @@ embedmlp_model = EmbedMLP(n_feats=5, output_dim=2, architecture=architecture, n_
                           gamma=gamma, name=f'EmbedMLP')
 embedmlp_model.fit(train_data=train_data_, val_data=val_data_, n_epochs=n_epochs, batch_size=batch_size,
                    optimizer=optimizer, learning_rate=learning_rate, patience=patience, lookahead=lookahead,
-                   save_path=f'{path_to_repo}/models/', seed=seed)
+                   save_path='models/', seed=seed)
 
 train_pred = embedmlp_model.predict(train_data_[0:2])
 val_pred   = embedmlp_model.predict(val_data_[0:2])

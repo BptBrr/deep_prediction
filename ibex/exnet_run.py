@@ -1,4 +1,4 @@
-from deep_prediction.exnet_v3 import *
+from exnet_v3 import *
 from sklearn.metrics import average_precision_score
 import os
 
@@ -8,7 +8,6 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 seed = 0
 asset = 'TEF'
-path_to_repo = '/home/baptiste/Projects/deep_prediction'
 
 # Build params
 n_experts = 4
@@ -29,7 +28,7 @@ optimizer = 'nadam'
 lookahead = True
 
 # ===== Preparing data =====
-data = pd.read_csv(f'{path_to_repo}/ibex/data/IBEX_{asset}_dataset.csv')
+data = pd.read_csv(f'data/IBEX_{asset}_dataset.csv')
 n_investors = np.unique(data.investor_encoding.values).shape[0]
 
 train_idx = data['train_idx'].values
@@ -61,7 +60,7 @@ model = ExNet(n_feats=len(features), output_dim=2, n_experts=n_experts, expert_a
               spec_weight=spec_weight, entropy_weight=entropy_weight, gamma=gamma, name=f'ExNet_{asset}')
 model.fit(train_data=train_data_, val_data=val_data_, n_epochs=n_epochs, batch_size=batch_size, optimizer='nadam',
           learning_rate=learning_rate, lookahead=True, patience=patience, seed=seed,
-          save_path=f'{path_to_repo}/ibex/models/')
+          save_path='models/')
 
 # ===== Results =====
 train_pred = model.predict(train_data_[0:2])

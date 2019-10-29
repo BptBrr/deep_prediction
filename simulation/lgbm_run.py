@@ -4,7 +4,6 @@ import pickle
 import lightgbm as lgbm
 from sklearn.metrics import roc_auc_score, accuracy_score
 
-path_to_repo = '/home/baptiste/Projects/deep_prediction'
 seed = 0
 np.random.seed(seed)
 
@@ -16,8 +15,8 @@ n_estimators = 1000
 subsample = 0.85
 colsample_bytree = 1.
 
-data = pd.read_csv(f'{path_to_repo}/simulation/data/sampled_data.csv')
-with open(f'{path_to_repo}/simulation/data/sampled_data_specs.pkl', 'rb') as f:
+data = pd.read_csv('data/sampled_data.csv')
+with open('data/sampled_data_specs.pkl', 'rb') as f:
     data_specs = pickle.load(f)
 
 features = [feature for feature in data.columns if 'X' in feature]

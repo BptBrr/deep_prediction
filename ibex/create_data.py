@@ -1,12 +1,14 @@
 import pandas as pd
 import numpy as np
 from ta import *
+import os
+
+if not os.path.isdir('models'):
+    os.mkdir('models')
 
 asset = 'TEF'
-path_to_repo = '/home/baptiste/Projects/deep_prediction'
-
-investors = pd.read_csv(f'{path_to_repo}/ibex/data/{asset}_Investors.csv')
-prices = pd.read_csv(f'{path_to_repo}/ibex/data/{asset}_Prices.csv')
+investors = pd.read_csv(f'data/{asset}_Investors.csv')
+prices = pd.read_csv(f'data/{asset}_Prices.csv')
 
 # Use all TA features from 'ta' library.
 ta_features_to_use = ['volume_adi', 'volume_obv', 'volume_cmf', 'volume_fi', 'volume_em', 'volume_vpt',
@@ -81,4 +83,4 @@ data = data[['date', 'investor_encoding', 'buyer'] + features_to_use]
 data['train_idx'] = train_idx
 data['val_idx'] = val_idx
 data['test_idx'] = test_idx
-data.to_csv(f'{path_to_repo}/ibex/data/IBEX_{asset}_dataset.csv', index=False)
+data.to_csv(f'data/IBEX_{asset}_dataset.csv', index=False)
