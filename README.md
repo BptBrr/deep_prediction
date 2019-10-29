@@ -10,10 +10,10 @@ Deep learning code is written in **TensorFlow 2.0**.
 ### Using this repo
 #### 1. Simulation
 
-Create **/data** and **/models** folders in the **/simulation** folder. Run *sample_data.py* to sample a dataset - the seed is set so as to get the same results as presented in the paper. *exnet_run.py*, *embedmlp_run.py* and *lgbm_run.py* respectively run the ExNet, the EmbedMLP and the LightGBM algorithms on the previously simulated data.
+Run *sample_data.py* to sample a dataset - the seed is set so as to get the same results as presented in the paper. *exnet_run.py*, *embedmlp_run.py* and *lgbm_run.py* respectively run the ExNet, the EmbedMLP and the LightGBM algorithms on the previously simulated data.
 
 #### 2. IBEX
-Create **/data** and **/models** folders in the **/ibex** folder. Download *TEF_Investors.csv* and *TEF_Prices.csv* from https://zenodo.org/record/2573031#.XaSQ9_fRY5l and drop them in the **/data** folder. Run *create_data.py* to create the dataset described in the article. Run *exnet_run.py* and *lgbm_run.py* to respectively run the ExNet and LGBM algorithms on the previously created data. The weights file corresponding to the best ExNet found is included, and can be investiguated using the *exnet_analysis.py* file.
+Run *create_data.py* to create the dataset described in the article. Run *exnet_run.py* and *lgbm_run.py* to respectively run the ExNet and LGBM algorithms on the previously created data. The weights file corresponding to the best ExNet found is included, and can be investiguated using the *exnet_analysis.py* file.
 
 ### Requirements
 - python==3.6.4
@@ -21,3 +21,4 @@ Create **/data** and **/models** folders in the **/ibex** folder. Download *TEF_
 - tensorflow_addons==0.6.0
 - numpy==1.17.2
 - lightgbm==2.1.2
+- ta (https://github.com/bukosabino/ta)
