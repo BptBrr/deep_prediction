@@ -1,3 +1,5 @@
+import sys
+sys.path.append('..')
 from exnet_v3 import *
 from sklearn.metrics import average_precision_score
 import os

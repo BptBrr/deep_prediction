@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 from ta import *
 import os
 
@@ -29,16 +27,16 @@ ta_features = add_all_ta_features(prices, "open", "max", "min", "close", "volume
 ta_features = ta_features[['date'] + ta_features_to_use]
 
 # Some of these financial indicators use close & volume, which are not available for prediction at date t.
-ta_features[ta_features_to_use] = ta_features[ta_features_to_use].shift(fill_value=0.)
+ta_features.loc[:, ta_features_to_use] = ta_features[ta_features_to_use].shift(fill_value=0.).values
 
 # We will only try to predict Buy moves here - we hypothesize that Sell moves, for 'retail' investors, may come from
 # factors that do not depend on the market, whereas Buy moves are always motivated by market-related factors.
-investors['previous_position'] = investors.groupby(['investor_id'])['position'].shift(fill_value=0.)
-investors['move'] = investors.position - investors.previous_position
-investors['buyer'] = 1 * (investors.move > 0.)
+investors.loc[:, 'previous_position'] = investors.groupby(['investor_id'])['position'].shift(fill_value=0.)
+investors.loc[:, 'move'] = investors.position.values - investors.previous_position.values
+investors.loc[:, 'buyer'] = 1 * (investors.move.values > 0.)
 
 # As we use position in our model features, we need to shift it as well.
-investors['position'] = investors['previous_position']
+investors.loc[:, 'position'] = investors['previous_position'].values
 
 # We re-use the active definition introduced in the original paper, but on the Buy side only. We apply this threshold
 # on the training set, as we need to see a client being active to be able to predict its activity.
@@ -52,8 +50,8 @@ investor_mapping = dict(zip(active_investors, range(len(active_investors))))
 
 data = investors.merge(ta_features, on=['date'], how='left')
 data = data[data.investor_id.isin(active_investors)]
-data['date'] = data['date'].apply(lambda x: float(x.replace('-', '')))
-data['investor_encoding'] = data['investor_id'].apply(lambda x: investor_mapping[x])
+data.loc[:, 'date'] = data['date'].apply(lambda x: float(x.replace('-', '')))
+data.loc[:, 'investor_encoding'] = data['investor_id'].apply(lambda x: investor_mapping[x])
 
 # Removing irrelevant lines.
 data = data[-(data.date == 20000103.)].reset_index()
@@ -72,15 +70,15 @@ train_std = train_std.reset_index().rename(columns={'position': 'std'})
 data = data.merge(train_mean, on='investor_encoding', how='left')
 data = data.merge(train_std, on='investor_encoding', how='left')
 
-data['position'] = (data['position'] - data['mean']) / (data['std'] + 1e-7)
-data['position_1m'] = data['position'].rolling(window=22, min_periods=1).mean()
-data['position_3m'] = data['position'].rolling(window=66, min_periods=1).mean()
-data['position_6m'] = data['position'].rolling(window=132, min_periods=1).mean()
-data['position_1y'] = data['position'].rolling(window=264, min_periods=1).mean()
+data.loc[:, 'position'] = (data['position'] - data['mean']) / (data['std'] + 1e-7)
+data.loc[:, 'position_1m'] = data['position'].rolling(window=22, min_periods=1).mean()
+data.loc[:, 'position_3m'] = data['position'].rolling(window=66, min_periods=1).mean()
+data.loc[:, 'position_6m'] = data['position'].rolling(window=132, min_periods=1).mean()
+data.loc[:, 'position_1y'] = data['position'].rolling(window=264, min_periods=1).mean()
 data = data[['date', 'investor_encoding', 'buyer'] + features_to_use]
 
 # Saving splits as well.
-data['train_idx'] = train_idx
-data['val_idx'] = val_idx
-data['test_idx'] = test_idx
+data.loc[:, 'train_idx'] = train_idx
+data.loc[:, 'val_idx'] = val_idx
+data.loc[:, 'test_idx'] = test_idx
 data.to_csv(f'data/IBEX_{asset}_dataset.csv', index=False)
