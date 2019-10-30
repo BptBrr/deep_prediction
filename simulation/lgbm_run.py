@@ -6,13 +6,16 @@ from sklearn.metrics import roc_auc_score, accuracy_score
 
 seed = 0
 np.random.seed(seed)
+mode = 'cluster'
 
 # LGBM params
-num_leaves = 256
-max_depth = 20
-learning_rate = 0.05
-n_estimators = 1000
-subsample = 0.85
+num_leaves = 64
+min_child_samples = 32
+max_depth = 10
+learning_rate = 0.005
+n_estimators = 5000
+subsample = 0.25
+subsample_freq = 2
 colsample_bytree = 1.
 
 data = pd.read_csv('data/sampled_data.csv')
@@ -23,10 +26,17 @@ features = [feature for feature in data.columns if 'X' in feature]
 clients = data.Client.unique()
 clients_groups = [client.split('_')[0] for client in clients]
 
-np.random.shuffle(clients)  # Clients are shuffled so as not to provide info to the model through clients' encodings.
-clients_encoding = dict(zip(clients, range(len(clients))))
-encoding_to_group = {clients_encoding[c]: c.split('_')[0] for c in clients}
-data['client_encoding'] = [clients_encoding[client] for client in data.Client]
+if mode == 'classic':
+    np.random.shuffle(clients)  # Clients are shuffled so as not to provide info to the model through clients' encodings
+    clients_encoding = dict(zip(clients, range(len(clients))))
+    data['client_encoding'] = [clients_encoding[client] for client in data.Client]
+elif mode == 'cluster':
+    clusters_mapping = dict(zip(np.unique(clients_groups), range(len(np.unique(clients_groups)))))
+    clusters = [clusters_mapping[c] for c in clients_groups]
+    clients_encoding = dict(zip(clients, clusters))
+    data['client_encoding'] = [clients_encoding[client] for client in data.Client]
+else:
+    raise ValueError('Try mode in {classic, cluster}.')
 
 # Splitting & shuffling data.
 train_data = data.iloc[data_specs['train_split']].sample(frac=1.)
@@ -34,9 +44,9 @@ val_data = data.iloc[data_specs['valid_split']].sample(frac=1.)
 test_data = data.iloc[data_specs['test_split']].sample(frac=1.)
 
 print(f'Training on {train_data.shape[0]} samples, validating on {val_data.shape[0]} samples.')
-lgbm_model = lgbm.LGBMClassifier(num_leaves=num_leaves, max_depth=max_depth, learning_rate=learning_rate,
-                                 n_estimators=n_estimators, subsample=subsample, colsample_bytree=colsample_bytree,
-                                 random_state=seed)
+lgbm_model = lgbm.LGBMClassifier(num_leaves=num_leaves, min_child_samples=min_child_samples, max_depth=max_depth,
+                                 learning_rate=learning_rate, n_estimators=n_estimators, subsample=subsample,
+                                 subsample_freq=subsample_freq, colsample_bytree=colsample_bytree, random_state=seed)
 lgbm_model.fit(train_data[features + ['client_encoding']].values, train_data.Y.values,
                eval_set=(val_data[features + ['client_encoding']].values, val_data.Y.values),
                feature_name=features + ['client_encoding'], categorical_feature=['client_encoding'],

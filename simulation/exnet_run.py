@@ -18,18 +18,18 @@ seed = 0
 np.random.seed(seed)
 
 # Build params
-n_experts = 10
-expert_architecture = []
-embedding_size = 32
-dropout_rates = {'input': 0., 'hidden': 0.}
+n_experts = 16
+expert_architecture = [64, 32]
+embedding_size = 64
+dropout_rates = {'input': 0., 'hidden': 0.2}
 weight_decay = {'l1': 0., 'l2': 0.}
 spec_weight = 0.01
-entropy_weight = 1.
+entropy_weight = 0.1
 gamma = 0.
 
 # Fit params
 n_epochs = 200
-patience = 10
+patience = 20
 batch_size = 128
 learning_rate = 1e-3
 optimizer = 'nadam'

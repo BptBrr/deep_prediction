@@ -15,17 +15,17 @@ seed = 0
 np.random.seed(seed)
 
 # Build params
-architecture = [64, 16]
-embedding_size = 32
-dropout_rates = {'input': 0., 'hidden': 0.2}
+architecture = [128, 64]
+embedding_size = 64
+dropout_rates = {'input': 0., 'hidden': 0.15}
 weight_decay = {'l1': 0., 'l2': 0.}
 gamma = 0.
 
 # Fit params
 n_epochs = 200
-patience = 10
-batch_size = 128
-learning_rate = 1e-3
+patience = 20
+batch_size = 64
+learning_rate = 4.2e-5
 optimizer = 'nadam'
 lookahead = True
 
