@@ -10,10 +10,8 @@ import os
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score, accuracy_score
 
+# In this simple setting, with such small dataset, using GPU may hinder performance.
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-# physical_devices = tf.config.experimental.list_physical_devices('GPU')
-# tf.config.experimental.set_memory_growth(physical_devices[0], True)
-
 seed = 0
 np.random.seed(seed)
 

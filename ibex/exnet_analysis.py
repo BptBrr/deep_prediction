@@ -1,15 +1,18 @@
 import sys
 sys.path.append('..')
+import os
 from exnet_v3 import *
 from sklearn.metrics import roc_auc_score, average_precision_score
 
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'  # GPU not required here.
+np.random.seed(0)  # For reproducibility of permutation importance.
 asset = 'TEF'
 build_params = {'n_experts': 4,
                 'spec_weight': 7.7e-4,
                 'entropy_weight': 4.2e-2,
                 'expert_architecture': [32, 32],
                 'embedding_size': 32,
-                'dropout_rates': {'input': 0.1, 'hidden': 0.5},
+                'dropout_rates': {'input': 0., 'hidden': 0.},
                 'weight_decay': {'l1': 0., 'l2': 0.},
                 'gamma': 2.5}
 

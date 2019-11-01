@@ -2,11 +2,11 @@ import sys
 sys.path.append('..')
 from exnet_v3 import *
 from sklearn.metrics import average_precision_score
-import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-# physical_devices = tf.config.experimental.list_physical_devices('GPU')
-# tf.config.experimental.set_memory_growth(physical_devices[0], True)
+physical_devices = tf.config.experimental.list_physical_devices('GPU')
+if len(physical_devices):
+    # The experiment will only take necessary memory on the GPU.
+    tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 seed = 0
 asset = 'TEF'
