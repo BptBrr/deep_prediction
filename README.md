@@ -16,7 +16,8 @@ Run *sample_data.py* to sample a dataset - the seed is set so as to get the same
 Run *create_data.py* to create the dataset described in the article. Run *exnet_run.py* and *lgbm_run.py* to respectively run the ExNet and LGBM algorithms on the previously created data. The weights file corresponding to the best ExNet found is included, and can be investiguated using the *exnet_analysis.py* file.
 
 ### Requirements
-- python==3.6.4
+- python==3.7.3
+- pandas==0.25.2
 - tensorflow==2.0.0
 - tensorflow_addons==0.6.0
 - numpy==1.17.2
