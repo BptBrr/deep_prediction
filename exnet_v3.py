@@ -399,7 +399,7 @@ class ExNet(tf.keras.Model):
         plt.ylim([0., 1.])
         plt.xlabel('Investors')
         plt.ylabel('Percentage of expert attribution')
-        plt.title('Experts distribution for all inverstors')
+        plt.title('Experts distribution for all investors')
         plt.show()
 
         return reorder_probas, count_per_expert, unattributed_experts
